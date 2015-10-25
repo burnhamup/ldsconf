@@ -1,9 +1,6 @@
 import copy
 from datetime import date, timedelta
 from random import randint, shuffle
-from time import sleep
-from lxml import html
-import requests
 import json
 
 __author__ = 'Chris'
@@ -25,10 +22,7 @@ def generate_study_plan(month, year):
     end_date += timedelta(days=7)
     dates = get_partition_dates(end_date, start_date, study_periods)
 
-
-
-
-    with open('conferences.json', 'r') as json_file:
+    with open('../data/conferences.json', 'r') as json_file:
         all_conference_talks = json.load(json_file)
     results = []
     for segment_start, segment_end in zip(dates[:-1], dates[1:]):
@@ -36,9 +30,6 @@ def generate_study_plan(month, year):
         for n, talk in zip(range((segment_end-segment_start).days), talks):
             current_date = segment_start + timedelta(days=n)
             results.append((current_date.isoformat(), talk))
-
-
-    # Combine these three together and return
 
     return results
 
@@ -54,53 +45,6 @@ def get_partition_dates(end_date, start_date, study_periods):
         dates.append(partition_date)
     dates.append(end_date)
     return dates
-
-
-CONFERENCE_URL = "https://www.lds.org/general-conference/sessions/%s/%s?lang=eng"
-
-
-def get_conference_talks(year, month):
-    url = CONFERENCE_URL % (year, month)
-    page = requests.get(url)
-
-    tree = html.fromstring(page.text)
-    talks_html = tree.xpath('//td[span[@class="talk"]/a]')
-    talks = []
-    for talk_html in talks_html:
-        title = talk_html[0][0].text
-        link = talk_html[0][0].attrib['href']
-        author = talk_html[1].text
-        talk = Talk(title, link, author)
-        talks.append(talk)
-    weight = year - 1970 + (1 if month == 10 else 0)
-    conference = {
-        'month': month,
-        'year': year,
-        'key': '%s-%s' % (month, year),
-        'talks': talks,
-        'weight': pow(2, weight - 2)
-    }
-    return conference
-
-
-class Talk(dict):
-    def __init__(self, title, url, author):
-        self['title'] = title
-        self['url'] = url
-        self['author'] = author
-
-
-def generate_conference_history(start_year, end_year):
-    conferences = {}
-    for year in range(start_year, end_year):
-        for month in (4, 10):
-            conference = get_conference_talks(year, month)
-            sleep(1)
-            conferences[conference['key']] = conference
-            print "%s - %s" % (year, month)
-    return conferences
-
-
 
 
 def sort_talks(start_date, end_date, all_conference_talks, month, year):
@@ -127,8 +71,11 @@ def sort_talks(start_date, end_date, all_conference_talks, month, year):
                 break
         talks = chosen_conference['talks']
 
-        chosen_talk_index = randint(1, len(talks))
-        chosen_talk = talks[chosen_talk_index-1]
+        chosen_talk_index = randint(0, len(talks)-1)
+        chosen_talk = copy.copy(talks[chosen_talk_index])
+        chosen_talk['year'] = chosen_conference['year']
+        chosen_talk['month'] = chosen_conference['month']
+
         if chosen_talk not in results:
             number_of_talks_to_grab -= 1
             results.append(chosen_talk)
@@ -141,15 +88,3 @@ def get_conference_start_date(month, year):
     days_to_first_sunday = 6 - start.weekday()
     start += timedelta(days=days_to_first_sunday)
     return start
-
-
-def update_file():
-    with open('conferences.json', 'r') as json_file:
-        all_conference_talks = json.load(json_file)
-    all_conference_talks.update(generate_conference_history(2015,2016))
-    with open('conferences.json2', 'w') as json_file:
-        json.dump(all_conference_talks, json_file)
-
-results = generate_study_plan(10, 2015)
-with open('results.json', 'w') as json_file:
-    json.dump(results, json_file)

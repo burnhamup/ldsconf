@@ -4,9 +4,11 @@ from ldsconf.studyplan import generate_study_plan
 
 __author__ = 'Chris'
 
-
-conferences = Conference.get_all_conferences()
-Conference.save(conferences)
-# results = generate_study_plan(10, 2015)
-# for date, talk in results:
-#     print "%s - %s, %s (%s, %s)" % (date, talk['title'], talk['author'], talk.get('year', 2015), talk.get('month', 10))
+#
+# conferences = Conference.get_all_conferences()
+# Conference.save(conferences)
+results = generate_study_plan(10, 2015)
+for plan in results:
+    print "Plan"
+    for date, talk in plan:
+        print "%s - %s, %s (%s, %s)" % (date, talk.title, talk.author, talk.year, talk.month)

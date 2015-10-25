@@ -32,12 +32,53 @@ def get_conference(year, month):
     return conference
 
 
-class Talk(dict):
-    def __init__(self, title, url, author, **kwargs):
-        super(Talk, self).__init__(**kwargs)
-        self['title'] = title
-        self['url'] = url
-        self['author'] = author
+class Conference(object):
+    def __init__(self, month, year, talks):
+        self.month = month
+        self.year = year
+        self.key = '%s-%s' % (month, year)
+        self.talks = talks
+
+    def to_dict(self):
+        return {
+            'month':self.month,
+            'year': self.year,
+            'talks': [talk.to_dict() for talk in self.talks]
+        }
+
+    @staticmethod
+    def get_all_conferences():
+        conferences = {}
+        with open('../data/conferences.json', 'r') as json_file:
+            all_conference_talks = json.load(json_file)
+        for conference_key, conference in all_conference_talks.iteritems():
+            talks = []
+            for talk in conference['talks']:
+                talks.append(Talk(talk['title'], talk['url'], talk['author']))
+            conferences[conference_key] = Conference(conference['month'], conference['year'], talks)
+        return conferences
+
+    @staticmethod
+    def save(conferences):
+        raw_data = {}
+        for conference_key, conference in conferences.iteritems():
+            raw_data[conference_key] = conference.to_dict()
+        with open('../data/conferences.json', 'w') as json_file:
+            json.dump(raw_data, json_file, indent=2)
+
+
+class Talk():
+    def __init__(self, title, url, author):
+        self.title = title
+        self.url = url
+        self.author = author
+
+    def to_dict(self):
+        return {
+            'title': self.title,
+            'url': self.url,
+            'author': self.author
+        }
 
 
 def generate_conference_history(start_year, end_year):

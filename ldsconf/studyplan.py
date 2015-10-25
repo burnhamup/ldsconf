@@ -27,12 +27,8 @@ def generate_study_plan(month, year):
     conferences = Conference.get_all_conferences()
     results = []
     for segment_start, segment_end in zip(dates[:-1], dates[1:]):
-        segment_results = []
         talks = sort_talks(segment_start, segment_end, conferences, month, year)
-        for n, talk in zip(range((segment_end-segment_start).days), talks):
-            current_date = segment_start + timedelta(days=n)
-            segment_results.append((current_date.isoformat(), talk))
-        results.append(segment_results)
+        results.append(talks)
     return results
 
 
@@ -51,13 +47,13 @@ def get_partition_dates(end_date, start_date, study_periods):
 
 def sort_talks(start_date, end_date, all_conference_talks, month, year):
     number_of_talks_to_grab = (end_date - start_date).days
-    # Always include the most recent conference
+    # Include the most recent conference
     key = "%s-%s" % (month, year)
     assert key in all_conference_talks
     assert number_of_talks_to_grab >= len(all_conference_talks[key].talks)
-    results = []
-    results.extend(all_conference_talks[key].talks)
-    number_of_talks_to_grab -= len(results)
+    selected_talks = []
+    selected_talks.extend(all_conference_talks[key].talks)
+    number_of_talks_to_grab -= len(selected_talks)
 
     conference_talks = copy.copy(all_conference_talks)
     conference_talks.pop(key)
@@ -76,10 +72,15 @@ def sort_talks(start_date, end_date, all_conference_talks, month, year):
         chosen_talk_index = randint(0, len(talks)-1)
         chosen_talk = copy.copy(talks[chosen_talk_index])
 
-        if chosen_talk not in results:
+        if chosen_talk not in selected_talks:
             number_of_talks_to_grab -= 1
-            results.append(chosen_talk)
-    shuffle(results)
+            selected_talks.append(chosen_talk)
+    shuffle(selected_talks)
+    results = []
+
+    for n, talk in zip(range((end_date-start_date).days), selected_talks):
+        current_date = start_date + timedelta(days=n)
+        results.append((current_date.isoformat(), talk))
     return results
 
 

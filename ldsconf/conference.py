@@ -2,10 +2,11 @@ import json
 from time import sleep
 from lxml import html
 import requests
+import os
 
 __author__ = 'Chris'
 CONFERENCE_URL = "https://www.lds.org/general-conference/sessions/%s/%02d?lang=eng"
-
+CONFERENCE_FILE_NAME = os.path.join(os.path.dirname(__file__), '..', 'data','conferences.json')
 
 def get_conference(month, year):
     url = CONFERENCE_URL % (year, month)
@@ -28,8 +29,11 @@ class Conference(object):
     def __init__(self, month, year, talks):
         self.month = month
         self.year = year
-        self.key = '%s-%s' % (month, year)
+        self.key = '%d-%02d' % (year, month)
         self.talks = talks
+
+    def __len__(self):
+        return len(self.talks)
 
     @property
     def weight(self):
@@ -46,7 +50,7 @@ class Conference(object):
     @staticmethod
     def get_all_conferences():
         conferences = {}
-        with open('../data/conferences.json', 'r') as json_file:
+        with open(CONFERENCE_FILE_NAME, 'r') as json_file:
             all_conference_talks = json.load(json_file)
         for conference_key, conference in all_conference_talks.iteritems():
             talks = []
@@ -60,7 +64,7 @@ class Conference(object):
         raw_data = {}
         for conference_key, conference in conferences.iteritems():
             raw_data[conference_key] = conference.to_dict()
-        with open('../data/conferences.json', 'w') as json_file:
+        with open(CONFERENCE_FILE_NAME, 'w') as json_file:
             json.dump(raw_data, json_file, indent=2)
 
 
@@ -86,13 +90,13 @@ def generate_conference_history(start_year, end_year):
         for month in (4, 10):
             conference = get_conference(month, year)
             sleep(1)
-            conferences[conference['key']] = conference
+            conferences[conference.key] = conference
             print "%s - %s" % (year, month)
     return conferences
 
 
 def update_file():
-    with open('../data/conferences.json', 'r') as json_file:
+    with open(CONFERENCE_FILE_NAME, 'r') as json_file:
         all_conference_talks = json.load(json_file)
     for conference_key, conference in all_conference_talks.items():
         weight = conference['year'] - 1970 + (1 if conference['month'] == 10 else 0)

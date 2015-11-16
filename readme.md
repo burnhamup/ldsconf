@@ -3,7 +3,7 @@
 This program will create a study plan for General Conference. Specify a start data, an end date, and the number of study plans you wish to create. Talks will be gathered first from the most recent General Conference and any gaps will be filled in with talks from previous conferences.
 
 ## Installation
-`pip install git+git://github.com/myuser/foo.git`
+`pip install git+git://github.com/burnhamup/ldsconf.git`
 
 ## Basic Usage
 `ldsconf -s 2015-10-12 -e 2016-04-03`

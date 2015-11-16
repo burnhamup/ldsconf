@@ -1,12 +1,14 @@
 import json
 from time import sleep
+import os
+import sys
+
 from lxml import html
 import requests
-import os
 
-__author__ = 'Chris'
 CONFERENCE_URL = "https://www.lds.org/general-conference/sessions/%s/%02d?lang=eng"
-CONFERENCE_FILE_NAME = os.path.join(os.path.dirname(__file__), '..', 'data','conferences.json')
+CONFERENCE_FILE_NAME = os.path.join(sys.prefix, 'data', 'conferences.json')
+
 
 def get_conference(month, year):
     url = CONFERENCE_URL % (year, month)
@@ -42,7 +44,7 @@ class Conference(object):
 
     def to_dict(self):
         return {
-            'month':self.month,
+            'month': self.month,
             'year': self.year,
             'talks': [talk.to_dict() for talk in self.talks]
         }
@@ -68,7 +70,7 @@ class Conference(object):
             json.dump(raw_data, json_file, indent=2)
 
 
-class Talk():
+class Talk(object):
     def __init__(self, title, url, author, month, year):
         self.title = title
         self.url = url

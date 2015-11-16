@@ -2,24 +2,7 @@ import copy
 from datetime import date, timedelta
 from random import randint, shuffle
 
-from conference import Conference
-
-__author__ = 'Chris'
-
-
-def generate_my_study_plan(month, year):
-    """
-    :return:  A list of tuples containing ( <date>, <Talk> )
-    # TODO this is really a helper method that meets my needs.
-    """
-    # Calculate the dates of the conferences
-    start_date = get_conference_start_date(month, year)
-    next_month = 4 if month == 10 else 10
-    next_year = year + (1 if month == 10 else 0)
-    end_date = get_conference_start_date(next_month, next_year)
-    start_date += timedelta(days=7)
-    end_date += timedelta(days=7)
-    return generate_study_plan(start_date, end_date, 3)
+from ldsconf.conference import Conference
 
 
 def generate_study_plan(start_date, end_date, study_periods):
@@ -85,6 +68,7 @@ def pick_talks(start_date, end_date, all_conference_talks):
             selected_talks.append(chosen_talk)
     shuffle(selected_talks)
     return package_talks(start_date, end_date, selected_talks)
+
 
 def package_talks(start_date, end_date, selected_talks):
     shuffle(selected_talks)

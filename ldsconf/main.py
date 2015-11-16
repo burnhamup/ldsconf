@@ -64,3 +64,6 @@ def main():
         print "Conference Plan"
         for date, talk in plan:
             print "  %s -- %s, %s (%s-%s)" % (date.strftime("%m-%d-%Y"), talk.title, talk.author, talk.year, talk.month)
+
+if __name__ == '__main__':
+    main()

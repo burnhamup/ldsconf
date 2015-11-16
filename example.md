@@ -60,6 +60,7 @@
 - **12-08-2015** -- [Choose the Light *Vern P. Stanfill* (2015-10)](https://www.lds.org/general-conference/2015/10/choose-the-light?lang=eng)
 - **12-09-2015** -- [Turn to Him and Answers Will Come *James B. Martino* (2015-10)](https://www.lds.org/general-conference/2015/10/turn-to-him-and-answers-will-come?lang=eng)
 - **12-10-2015** -- [God Is at the Helm *M. Russell Ballard* (2015-10)](https://www.lds.org/general-conference/2015/10/god-is-at-the-helm?lang=eng)
+
 ##Conference Plan
 - **12-11-2015** -- [The Eternal Perspective of the Gospel *By Elder Rafael E. Pino* (2015-4)](https://www.lds.org/general-conference/2015/04/the-eternal-perspective-of-the-gospel?lang=eng)
 - **12-12-2015** -- [Be an Example and a Light *Thomas S. Monson* (2015-10)](https://www.lds.org/general-conference/2015/10/be-an-example-and-a-light?lang=eng)
@@ -122,6 +123,7 @@
 - **02-07-2016** -- [“Chosen to Bear Testimony of My Name” *David A. Bednar* (2015-10)](https://www.lds.org/general-conference/2015/10/chosen-to-bear-testimony-of-my-name?lang=eng)
 - **02-08-2016** -- [That the Lost May Be Found *By Elder M. Russell Ballard* (2012-4)](https://www.lds.org/general-conference/2012/04/that-the-lost-may-be-found?lang=eng)
 - **02-09-2016** -- [Wide Awake to Our Duties *By Carole M. Stephens* (2012-10)](https://www.lds.org/general-conference/2012/10/wide-awake-to-our-duties?lang=eng)
+
 ##Conference Plan
 - **02-10-2016** -- [Stay in the Boat and Hold On! *By Elder M. Russell Ballard* (2014-10)](https://www.lds.org/general-conference/2014/10/stay-in-the-boat-and-hold-on?lang=eng)
 - **02-11-2016** -- [Keep the Commandments *Thomas S. Monson* (2015-10)](https://www.lds.org/general-conference/2015/10/keep-the-commandments?lang=eng)

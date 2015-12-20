@@ -3,14 +3,15 @@ from time import sleep
 import os
 import sys
 
-from lxml import html
-import requests
 
 CONFERENCE_URL = "https://www.lds.org/general-conference/sessions/%s/%02d?lang=eng"
 CONFERENCE_FILE_NAME = os.path.join(sys.prefix, 'data', 'conferences.json')
 
+conferences = None
 
 def get_conference(month, year):
+    from lxml import html
+    import requests
     url = CONFERENCE_URL % (year, month)
     print url
     page = requests.get(url)
@@ -25,6 +26,21 @@ def get_conference(month, year):
         talk = Talk(title, link, author, month, year)
         talks.append(talk)
     return Conference(month, year, talks)
+
+def get_all_conferences(conference_file=None):
+    global conferences
+    if conferences is None:
+      conferences = {}
+      if conference_file is None:
+        conference_file = CONFERENCE_FILE_NAME
+      with open(conference_file, 'r') as json_file:
+          all_conference_talks = json.load(json_file)
+      for conference_key, conference in all_conference_talks.iteritems():
+          talks = []
+          for talk in conference['talks']:
+              talks.append(Talk(talk['title'], talk['url'], talk['author'], conference['month'], conference['year']))
+          conferences[conference_key] = Conference(conference['month'], conference['year'], talks)
+    return conferences
 
 
 class Conference(object):
@@ -50,15 +66,17 @@ class Conference(object):
         }
 
     @staticmethod
-    def get_all_conferences():
-        conferences = {}
-        with open(CONFERENCE_FILE_NAME, 'r') as json_file:
-            all_conference_talks = json.load(json_file)
-        for conference_key, conference in all_conference_talks.iteritems():
-            talks = []
-            for talk in conference['talks']:
-                talks.append(Talk(talk['title'], talk['url'], talk['author'], conference['month'], conference['year']))
-            conferences[conference_key] = Conference(conference['month'], conference['year'], talks)
+    def get_all_conferences(conference_file=None):
+        if conferences is None:
+          if conference_file is None:
+            conference_file = CONFERENCE_FILE_NAME
+          with open(conference_file, 'r') as json_file:
+              all_conference_talks = json.load(json_file)
+          for conference_key, conference in all_conference_talks.iteritems():
+              talks = []
+              for talk in conference['talks']:
+                  talks.append(Talk(talk['title'], talk['url'], talk['author'], conference['month'], conference['year']))
+              conferences[conference_key] = Conference(conference['month'], conference['year'], talks)
         return conferences
 
     @staticmethod

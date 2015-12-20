@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='ldsconf',
-    version='1.0.0',
+    version='1.0.1',
     description='LDS General Conference Study Plan Generator',
     url='https://github.com/burnhamup/ldsconf',
     author='Chris Burnham',

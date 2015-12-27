@@ -7,9 +7,7 @@ This program will create a study plan for General Conference. Specify a start da
 
 ## Basic Usage
 `ldsconf -s 2015-10-12 -e 2016-04-03`
-
 You can also use the library to access the study plans directly for help with formatting.
-
 ```
 from datetime import date
 from ldsconf import studyplan

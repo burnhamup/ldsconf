@@ -2,12 +2,12 @@ import copy
 from datetime import date, timedelta
 from random import randint, shuffle
 
-from ldsconf.conference import Conference
+from ldsconf.conference import get_all_conferences
 
 
-def generate_study_plan(start_date, end_date, study_periods):
+def generate_study_plan(start_date, end_date, study_periods, file_location=None):
     dates = get_partition_dates(end_date, start_date, study_periods)
-    conferences = Conference.get_all_conferences()
+    conferences = get_all_conferences(file_location)
     results = []
     for segment_start, segment_end in zip(dates[:-1], dates[1:]):
         talks = pick_talks(segment_start, segment_end, conferences)
@@ -29,7 +29,7 @@ def get_partition_dates(end_date, start_date, study_periods):
 
 
 def get_number_of_talks_in_most_recent_conference():
-    conferences = Conference.get_all_conferences()
+    conferences = get_all_conferences()
     latest_conference_talk_key = sorted(conferences.keys(), reverse=True)[0]
     return len(conferences[latest_conference_talk_key])
 

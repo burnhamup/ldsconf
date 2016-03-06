@@ -1,5 +1,5 @@
 import copy
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from random import randint, shuffle
 
 from ldsconf.conference import get_all_conferences
@@ -85,3 +85,23 @@ def get_conference_start_date(month, year):
     days_to_first_sunday = 6 - start.weekday()
     start += timedelta(days=days_to_first_sunday)
     return start
+
+
+def get_default_dates():
+    now = datetime.now()
+    if 4 <= now.month < 10:
+        month = 4
+    else:
+        month = 10
+    year = now.year
+    if now.month < 4:
+        year -= 1
+    start_date = get_conference_start_date(month, year)
+    start_date += timedelta(days=7)
+
+    next_month = 4 if month == 10 else 10
+    next_year = year + (1 if month == 10 else 0)
+    end_date = get_conference_start_date(next_month, next_year)
+    end_date += timedelta(days=7)
+
+    return start_date, end_date

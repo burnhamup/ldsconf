@@ -1,8 +1,9 @@
 import argparse
 import math
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from ldsconf import studyplan
+from ldsconf.studyplan import get_default_dates
 
 
 def valid_date(s):
@@ -11,26 +12,6 @@ def valid_date(s):
     except ValueError:
         msg = "Not a valid date: '{0}'.".format(s)
         raise argparse.ArgumentTypeError(msg)
-
-
-def get_default_dates():
-    now = datetime.now()
-    if 4 <= now.month < 10:
-        month = 4
-    else:
-        month = 10
-    year = now.year
-    if now.month < 4:
-        year -= 1
-    start_date = studyplan.get_conference_start_date(month, year)
-    start_date += timedelta(days=7)
-
-    next_month = 4 if month == 10 else 10
-    next_year = year + (1 if month == 10 else 0)
-    end_date = studyplan.get_conference_start_date(next_month, next_year)
-    end_date += timedelta(days=7)
-
-    return start_date, end_date
 
 
 def main():

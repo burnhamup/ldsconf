@@ -4,7 +4,7 @@ import os
 import sys
 
 
-CONFERENCE_URL = "https://www.lds.org/general-conference/sessions/%s/%02d?lang=eng"
+CONFERENCE_URL = 'https://www.lds.org/general-conference/%s/%02d'
 CONFERENCE_FILE_NAME = os.path.join(sys.prefix, 'data', 'conferences.json')
 
 conferences = None
@@ -17,12 +17,16 @@ def get_conference(month, year):
     page = requests.get(url)
 
     tree = html.fromstring(page.text)
-    talks_html = tree.xpath('//td[span[@class="talk"]/a]')
+    talks_html = tree.xpath('//a[@class="lumen-tile__link"]')
     talks = []
     for talk_html in talks_html:
-        title = talk_html[0][0].text
-        link = talk_html[0][0].attrib['href']
-        author = talk_html[1].text
+        link = 'https://www.lds.org' + talk_html.attrib['href']
+        if 'media' in link:
+            continue
+
+        title = talk_html[1][0].text.strip()
+        author = talk_html[1][1].text.strip()
+
         talk = Talk(title, link, author, month, year)
         talks.append(talk)
     return Conference(month, year, talks)
@@ -115,6 +119,17 @@ def generate_conference_history(start_year, end_year):
     return conferences
 
 
+def add_latest_conference(month, year):
+    existing_conferences = get_all_conferences()
+    newest_conference = get_conference(month, year)
+    existing_conferences[newest_conference.key] = newest_conference
+    Conference.save(existing_conferences)
+
+
+def save_conference(conferences):
+    with open(CONFERENCE_FILE_NAME, 'w') as json_file:
+        json.dump(conferences, json_file, indent=2)
+
 def update_file():
     with open(CONFERENCE_FILE_NAME, 'r') as json_file:
         all_conference_talks = json.load(json_file)
@@ -123,3 +138,6 @@ def update_file():
         conference['weight'] = pow(2, max(weight-1, 0))
     with open('../data/conferences.json', 'w') as json_file:
         json.dump(all_conference_talks, json_file, indent=2)
+
+if __name__ == '__main__':
+    add_latest_conference(10, 2016)

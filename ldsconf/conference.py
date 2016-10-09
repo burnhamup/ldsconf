@@ -24,7 +24,7 @@ def get_conference(month, year):
         if 'media' in link:
             continue
 
-        title = talk_html[1][0].text.strip()
+        title = talk_html[1][0][0].text.strip()
         author = talk_html[1][1].text.strip()
 
         talk = Talk(title, link, author, month, year)

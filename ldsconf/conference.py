@@ -4,7 +4,7 @@ import os
 import sys
 
 
-CONFERENCE_URL = 'https://www.lds.org/general-conference/%s/%02d'
+CONFERENCE_URL = 'https://www.lds.org/general-conference/%s/%02d?lang=eng'
 CONFERENCE_FILE_NAME = os.path.join(sys.prefix, 'data', 'conferences.json')
 
 conferences = None
@@ -140,4 +140,4 @@ def update_file():
         json.dump(all_conference_talks, json_file, indent=2)
 
 if __name__ == '__main__':
-    add_latest_conference(10, 2016)
+    add_latest_conference(4, 2017)

@@ -2,16 +2,17 @@ import json
 from time import sleep
 import os
 import sys
+from lxml import html
+import requests
 
 
-CONFERENCE_URL = 'https://www.lds.org/general-conference/%s/%02d?lang=eng'
+CONFERENCE_URL = 'https://www.churchofjesuschrist.org/general-conference/%s/%02d?lang=eng'
 CONFERENCE_FILE_NAME = os.path.join(sys.prefix, 'data', 'conferences.json')
 
 conferences = None
 
+
 def get_conference(month, year):
-    from lxml import html
-    import requests
     url = CONFERENCE_URL % (year, month)
     print url
     page = requests.get(url)
@@ -20,16 +21,16 @@ def get_conference(month, year):
     talks_html = tree.xpath('//a[@class="lumen-tile__link"]')
     talks = []
     for talk_html in talks_html:
-        link = 'https://www.lds.org' + talk_html.attrib['href']
+        link = 'https://www.churchofjesuschrist.org' + talk_html.attrib['href']
         if 'media' in link:
             continue
-
-        title = talk_html[1][0][0].text.strip()
-        author = talk_html[1][1].text.strip()
+        title = talk_html[1][0][0].text_content()
+        author = talk_html[1][1].text_content()
 
         talk = Talk(title, link, author, month, year)
         talks.append(talk)
     return Conference(month, year, talks)
+
 
 def get_all_conferences(conference_file=None):
     global conferences
@@ -119,6 +120,7 @@ class Talk(object):
     def __hash__(self):
         return hash((self.year, self.month, self.author, self.title, self.url))
 
+
 def generate_conference_history(start_year, end_year):
     conferences = {}
     for year in range(start_year, end_year + 1):
@@ -150,5 +152,6 @@ def update_file():
     with open('../data/conferences.json', 'w') as json_file:
         json.dump(all_conference_talks, json_file, indent=2)
 
+
 if __name__ == '__main__':
-    add_latest_conference(4, 2019)
+    add_latest_conference(10, 2019)

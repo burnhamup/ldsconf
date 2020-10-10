@@ -22,7 +22,7 @@ def get_conference(month, year):
     talks = []
     for talk_html in talks_html:
         link = 'https://www.churchofjesuschrist.org' + talk_html.attrib['href']
-        if 'media' in link:
+        if 'media' in link or 'video' in link:
             continue
         title = talk_html[1][0][0].text_content()
         author = talk_html[1][1].text_content()
@@ -154,4 +154,4 @@ def update_file():
 
 
 if __name__ == '__main__':
-    add_latest_conference(4, 2020)
+    add_latest_conference(10, 2020)

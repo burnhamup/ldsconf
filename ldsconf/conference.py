@@ -14,21 +14,23 @@ conferences = None
 
 def get_conference(month, year):
     url = CONFERENCE_URL % (year, month)
-    print url
+    print(url)
     page = requests.get(url)
-
+    talks = []
     tree = html.fromstring(page.text)
     talks_html = tree.xpath('//a[@class="lumen-tile__link"]')
-    talks = []
-    for talk_html in talks_html:
-        link = 'https://www.churchofjesuschrist.org' + talk_html.attrib['href']
-        if 'media' in link or 'video' in link:
-            continue
-        title = talk_html[1][0][0].text_content()
-        author = talk_html[1][1].text_content()
+    all_sessions = tree.xpath('//ul[@id="map1"]')[0]
+    session_html = all_sessions.xpath('//ul[@class="doc-map"]')
+    for session in session_html[1:]:
+        for talk_html in session:
+            print(talk_html.text_content())
+            title = talk_html[0][0].text_content()
+            author = 'TBD'
+            link = talk_html[0].attrib['href']
+            link = 'https://www.churchofjesuschrist.org' + link
+            talk = Talk(title, link, author, month, year)
+            talks.append(talk)
 
-        talk = Talk(title, link, author, month, year)
-        talks.append(talk)
     return Conference(month, year, talks)
 
 
@@ -40,7 +42,7 @@ def get_all_conferences(conference_file=None):
         conference_file = CONFERENCE_FILE_NAME
       with open(conference_file, 'r') as json_file:
           all_conference_talks = json.load(json_file)
-      for conference_key, conference in all_conference_talks.iteritems():
+      for conference_key, conference in all_conference_talks.items():
           talks = []
           for talk in conference['talks']:
               talks.append(Talk(talk['title'], talk['url'], talk['author'], conference['month'], conference['year']))
@@ -77,7 +79,7 @@ class Conference(object):
             conference_file = CONFERENCE_FILE_NAME
           with open(conference_file, 'r') as json_file:
               all_conference_talks = json.load(json_file)
-          for conference_key, conference in all_conference_talks.iteritems():
+          for conference_key, conference in all_conference_talks.items():
               talks = []
               for talk in conference['talks']:
                   talks.append(Talk(talk['title'], talk['url'], talk['author'], conference['month'], conference['year']))
@@ -87,7 +89,7 @@ class Conference(object):
     @staticmethod
     def save(conferences):
         raw_data = {}
-        for conference_key, conference in conferences.iteritems():
+        for conference_key, conference in conferences.items():
             raw_data[conference_key] = conference.to_dict()
         with open(CONFERENCE_FILE_NAME, 'w') as json_file:
             json.dump(raw_data, json_file, indent=2)
@@ -128,7 +130,7 @@ def generate_conference_history(start_year, end_year):
             conference = get_conference(month, year)
             sleep(1)
             conferences[conference.key] = conference
-            print "%s - %s" % (year, month)
+            print("%s - %s" % (year, month))
     return conferences
 
 
@@ -143,6 +145,7 @@ def save_conference(conferences):
     with open(CONFERENCE_FILE_NAME, 'w') as json_file:
         json.dump(conferences, json_file, indent=2)
 
+
 def update_file():
     with open(CONFERENCE_FILE_NAME, 'r') as json_file:
         all_conference_talks = json.load(json_file)
@@ -154,4 +157,4 @@ def update_file():
 
 
 if __name__ == '__main__':
-    add_latest_conference(10, 2020)
+    add_latest_conference(4, 2021)

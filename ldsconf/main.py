@@ -33,18 +33,21 @@ def main():
     study_periods = args.study_periods
     while study_periods is None:
         try:
-            study_periods = int(raw_input("How many study periods would like? (1-%d)" % maximum_study_periods))
+            study_periods = int(input("How many study periods would like? (1-%d)" % maximum_study_periods))
         except ValueError:
-            print "Please enter a number."
+            print("Please enter a number.")
 
     if study_periods > maximum_study_periods or study_periods <= 0:
         raise Exception("Number of study periods must be in range 1-%d" % maximum_study_periods)
 
     result = studyplan.generate_study_plan(args.start_date, args.end_date, study_periods)
     for plan in result:
-        print "Conference Plan"
+        print('<h2>Study Plan</h2>')
+        print('<ul>')
         for date, talk in plan:
-            print "  %s -- %s, %s (%s-%s)" % (date.strftime("%m-%d-%Y"), talk.title, talk.author, talk.year, talk.month)
+            print('<li>%s -- <a href="%s">%s</a>, %s (%s-%s)</li>' % (date.strftime("%m-%d-%Y"), talk.url, talk.title, talk.author, talk.year, talk.month))
+        print('</ul>')
+
 
 if __name__ == '__main__':
     main()

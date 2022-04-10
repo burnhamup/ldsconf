@@ -49,11 +49,11 @@ def pick_talks(start_date, end_date, all_conference_talks):
     conference_talks = copy.copy(all_conference_talks)
     conference_talks.pop(latest_conference_talk_key)
 
-    weighted_sum = sum(conference.weight for conference in conference_talks.itervalues())
+    weighted_sum = sum(conference.weight for conference in conference_talks.values())
     while number_of_talks_to_grab > 0:
         choice = randint(1, weighted_sum)
         chosen_conference = None
-        for conference in conference_talks.itervalues():
+        for conference in conference_talks.values():
             choice -= conference.weight
             if choice <= 0:
                 chosen_conference = conference

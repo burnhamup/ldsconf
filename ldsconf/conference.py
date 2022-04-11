@@ -20,7 +20,7 @@ def get_conference(month, year):
     tree = html.fromstring(page.text)
     talk_nodes = tree.xpath('//a[contains(@class, "list-tile")]')
     for talk_node in talk_nodes:
-        link = talk_node.attrib['href']
+        link = 'https://www.churchofjesuschrist.org/' + talk_node.attrib['href']
         author_node = talk_node.findall('.//p[@class="primaryMeta"]')
         if not author_node:
             continue

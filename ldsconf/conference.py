@@ -18,19 +18,16 @@ def get_conference(month, year):
     page = requests.get(url)
     talks = []
     tree = html.fromstring(page.text)
-    talks_html = tree.xpath('//a[@class="lumen-tile__link"]')
-    all_sessions = tree.xpath('//ul[@id="map1"]')[0]
-    session_html = all_sessions.xpath('//ul[@class="doc-map"]')
-    for session in session_html[1:]:
-        for talk_html in session:
-            print(talk_html.text_content())
-            title = talk_html[0][0].text_content()
-            author = 'TBD'
-            link = talk_html[0].attrib['href']
-            link = 'https://www.churchofjesuschrist.org' + link
-            talk = Talk(title, link, author, month, year)
-            talks.append(talk)
-
+    talk_nodes = tree.xpath('//a[contains(@class, "list-tile")]')
+    for talk_node in talk_nodes:
+        link = talk_node.attrib['href']
+        author_node = talk_node.findall('.//p[@class="primaryMeta"]')
+        if not author_node:
+            continue
+        author = author_node[0].text_content()
+        title = talk_node.findall('.//p[@class="title"]')[0].text_content()
+        talk = Talk(title, link, author, month, year)
+        talks.append(talk)
     return Conference(month, year, talks)
 
 
@@ -157,4 +154,4 @@ def update_file():
 
 
 if __name__ == '__main__':
-    add_latest_conference(4, 2021)
+    add_latest_conference(4, 2022)

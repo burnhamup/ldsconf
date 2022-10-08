@@ -154,4 +154,4 @@ def update_file():
 
 
 if __name__ == '__main__':
-    add_latest_conference(4, 2022)
+    add_latest_conference(10, 2022)
